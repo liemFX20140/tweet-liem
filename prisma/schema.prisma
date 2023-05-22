@@ -20,6 +20,7 @@ model Tweet {
     updatedAt DateTime @updatedAt
     likes     Like[]
 
+    @@unique([id, createdAt])
     @@index([userId])
 }
 

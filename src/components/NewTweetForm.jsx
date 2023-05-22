@@ -2,28 +2,37 @@ import { useSession } from "next-auth/react";
 import { useLayoutEffect, useState, useRef, useCallback } from "react";
 import { Button } from "~/components/Button";
 import { ProfileImage } from "~/components/ProfileImage";
+import { api } from "~/utils/api";
 
-export function NewTweetForm(props) {
+export function NewTweetForm() {
   const sesssion = useSession();
-
+  const [inputValue, setInputValue] = useState("");
+  //chinh chieu cao o nhap post
   function updateTextareaHeight(textArea) {
     if (textArea == null) return;
     textArea.style.height = "0";
     textArea.style.height = `${textArea.scrollHeight}px`;
   }
-
   const textAreaRef = useRef();
-
   const inputRef = useCallback((textArea) => {
     updateTextareaHeight(textArea);
     textAreaRef.current = textArea;
   }, []);
-  const [inputValue, setInputValue] = useState("");
-
+  //submit post
+  const createTweet = api.tweet.create.useMutation({
+    onSuccess: (newTweet) => {
+      console.log(newTweet);
+    },
+  });
+  const onSubmit = (e) => {
+    e?.preventDefault();
+    createTweet.mutate({ content: inputValue });
+    setInputValue("");
+  };
   useLayoutEffect(() => {
     updateTextareaHeight(textAreaRef.current);
   }, [inputValue]);
-  if (sesssion.status !== "authenticated") return;
+  if (sesssion.status !== "authenticated") return null;
   return (
     <form className="flex flex-col gap-2 border-b px-4 py-2">
       <div className="flex gap-4">
@@ -38,13 +47,7 @@ export function NewTweetForm(props) {
           placeholder="Say something intersting"
         ></textarea>
       </div>
-      <Button
-        className="self-end px-12"
-        onClick={(event) => {
-          event.preventDefault();
-          console.log(event.target);
-        }}
-      >
+      <Button className="self-end px-12" onClick={onSubmit}>
         Post
       </Button>
     </form>

@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { NewTweetForm } from "~/components/NewTweetForm";
+import { RecentTweets } from "~/components/RecentTweet";
 import { api } from "~/utils/api";
 
 const Home: NextPage = () => (
@@ -11,6 +12,7 @@ const Home: NextPage = () => (
       <h1 className="mb-2 px-4 text-lg font-bold">Home</h1>
     </header>
     <NewTweetForm></NewTweetForm>
+    <RecentTweets></RecentTweets>
   </>
 );
 
