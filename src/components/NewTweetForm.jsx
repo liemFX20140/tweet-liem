@@ -19,9 +19,33 @@ export function NewTweetForm() {
     textAreaRef.current = textArea;
   }, []);
   //submit post
+  const trpc = api.useContext();
   const createTweet = api.tweet.create.useMutation({
     onSuccess: (newTweet) => {
-      console.log(newTweet);
+      trpc.tweet.InfFeed.setInfiniteData({}, (oldData) => {
+        if (sesssion.status !== "authenticated") return;
+        if (oldData == null || oldData.pages[0] == null) return;
+        const newCacheTweets = {
+          ...newTweet,
+          likesCount: { likes: 0 },
+          likeByMe: false,
+          user: {
+            id: sesssion.data.user.id,
+            name: sesssion.data.user.name,
+            image: sesssion.data.user.image,
+          },
+        };
+        return {
+          ...oldData,
+          pages: [
+            {
+              ...oldData.pages[0],
+              mappedTweets: [newCacheTweets, ...oldData.pages[0].mappedTweets],
+            },
+            ...oldData.pages.slice(1),
+          ],
+        };
+      });
     },
   });
   const onSubmit = (e) => {

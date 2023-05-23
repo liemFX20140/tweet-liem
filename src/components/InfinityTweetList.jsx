@@ -1,7 +1,6 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import { TweetCard } from "~/components/TweetCard";
 export function InfinityTweetList({ tweets, hasMore, fetchData }) {
-  console.log(fetchData);
   return (
     <>
       {tweets == null ? (

@@ -1,8 +1,7 @@
 import { useSession } from "next-auth/react";
 import { VscHeart, VscHeartFilled } from "react-icons/vsc";
-export function HeartButton({ likeByMe }) {
+export function HeartButton({ likeByMe, toggleLike }) {
   const session = useSession();
-
   const HeartIcon = likeByMe ? VscHeartFilled : VscHeart;
   return (
     <>
@@ -12,6 +11,7 @@ export function HeartButton({ likeByMe }) {
         </div>
       ) : (
         <button
+          onClick={toggleLike}
           className={`group flex items-center gap-1 self-start transition-colors duration-200 ${
             likeByMe
               ? "text-gray-500"
