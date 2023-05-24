@@ -54,15 +54,15 @@ export function TweetCard({ tweet }) {
   return (
     <li className="flex gap-4 border-b px-4 py-4">
       <Link href={`/profiles/${user?.id}`}>
-        <ProfileImage src={user?.image}></ProfileImage>
+        <ProfileImage src={tweet.user?.image}></ProfileImage>
       </Link>
       <div className="flex flex-grow flex-col">
         <div className="flex gap-1">
           <Link
-            href={`/profiles/${user?.id}`}
+            href={`/profiles/${tweet.user?.id}`}
             className="font-bold outline-none hover:underline focus-visible:underline"
           >
-            {user.name}
+            {tweet.user.name}
           </Link>
           <span className="text-gray-500"></span>
           <span className="text-gray-500">

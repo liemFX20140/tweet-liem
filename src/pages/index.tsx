@@ -11,6 +11,7 @@ import { set } from "zod";
 
 const Home: NextPage = () => {
   const session = useSession();
+  console.log(session);
   const [tab, setTab] = useState("Recent");
   return (
     <>

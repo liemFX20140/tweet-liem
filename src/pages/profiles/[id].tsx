@@ -15,6 +15,7 @@ import { VscArrowLeft } from "react-icons/vsc";
 import { ProfileImage } from "~/components/ProfileImage";
 import { InfinityTweetList } from "~/components/InfinityTweetList";
 import { LoadingSpinner } from "~/components/LoadingSpinner";
+import { FollowingButton } from "~/components/FollowingButton";
 const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   id,
 }) => {
@@ -23,7 +24,23 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
     { userId: id },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
+  // toggle follow
+  const trpc = api.useContext();
+  const toggleFollow = api.profiles.toggleFollow.useMutation({
+    onSuccess: ({ addFollow }) => {
+      trpc.profiles.getById.setData({ id }, (oldData) => {
+        if (oldData == null) return;
+        const modifierFollower = addFollow ? 1 : -1;
+        return {
+          ...oldData,
+          isFollowing: addFollow,
+          followersCount: oldData.followersCount + modifierFollower,
+        };
+      });
+    },
+  });
 
+  // loadding
   if (profile == null && !tweets.isLoading) {
     return <ErrorPage statusCode={404}></ErrorPage>;
   }
@@ -33,7 +50,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   return (
     <>
       <Head>
-        <title>{`Twitter - ${profile.name}`}</title>
+        <title>{`Twitter - ${profile?.name}`}</title>
       </Head>
       <header className="sticky top-0 z-10 flex items-center border-b bg-white px-4 py-2">
         <Link href={".."} className="mr-2">
@@ -42,21 +59,27 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
           </IconHover>
         </Link>
         <ProfileImage
-          src={profile.image}
+          src={profile?.image}
           className="flex-shrink-0"
         ></ProfileImage>
         <div className="ml-2 flex-grow">
-          <h1 className="text-lg font-bold">{profile.name}</h1>
+          <h1 className="text-lg font-bold">{profile?.name}</h1>
           <div className="text-gray-500">
-            {profile.tweetsCount > 1
-              ? `${profile.tweetsCount} Tweets`
-              : `${profile.tweetsCount} Tweet`}
-            <span className="ml-2">{profile.followingCount} Following</span>
+            {profile?.tweetsCount > 1
+              ? `${profile?.tweetsCount} Tweets`
+              : `${profile?.tweetsCount} Tweet`}
+            <span className="ml-2">{profile?.followingCount} Following</span>
             <span className="ml-2">
-              {profile.followersCount > 1
-                ? `${profile.followersCount} Followers`
-                : `${profile.followersCount} Follower`}
+              {profile?.followersCount > 1
+                ? `${profile?.followersCount} Followers`
+                : `${profile?.followersCount} Follower`}
             </span>
+            {"      "}
+            <FollowingButton
+              userId={id}
+              isFollowing={profile?.isFollowing}
+              onClickButton={() => toggleFollow.mutate({ userId: id })}
+            ></FollowingButton>
           </div>
         </div>
       </header>

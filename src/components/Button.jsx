@@ -4,6 +4,7 @@ export function Button({
   small = false,
   gray = false,
   className = "",
+  onClickButton,
   ...props
 }) {
   const sizeClasses = small ? "px-2 py-1" : "px-4 py-2 font-bold";
@@ -12,6 +13,7 @@ export function Button({
     : "bg-blue-500 hover:bg-blue-400 focus-visible:bg-blue-400";
   return (
     <button
+      onClick={onClickButton}
       className={`rounded-full text-white transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-50 ${sizeClasses} ${colorClasses} ${className}`}
       {...props}
     ></button>
