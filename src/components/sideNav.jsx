@@ -8,7 +8,6 @@ const SideNav = (props) => {
   const data = session.data;
   const user = session.data?.user;
 
-  console.log(session);
   return (
     <nav className="sticky top-0 px-2 py-4">
       <ul className="flex flex-col items-start gap-2 whitespace-nowrap">
@@ -28,7 +27,7 @@ const SideNav = (props) => {
               <IconHover>
                 <span className="flex items-center gap-4">
                   <VscAccount className="h-8 w-8"></VscAccount>
-                  <span className="hidden text-lg md:inline">Home</span>
+                  <span className="hidden text-lg md:inline">Profile</span>
                 </span>
               </IconHover>
             </Link>

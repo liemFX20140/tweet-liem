@@ -28,7 +28,8 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.mjs",
-    "src/server/api/routers/Tweet.js"
+    "src/server/api/routers/Tweet.js",
+    "src/pages/index.jsx"
   ],
   "exclude": ["node_modules"]
 }

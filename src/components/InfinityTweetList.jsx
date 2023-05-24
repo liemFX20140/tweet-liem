@@ -1,10 +1,11 @@
 import InfiniteScroll from "react-infinite-scroll-component";
 import { TweetCard } from "~/components/TweetCard";
+import { LoadingSpinner } from "~/components/LoadingSpinner";
 export function InfinityTweetList({ tweets, hasMore, fetchData }) {
   return (
     <>
       {tweets == null ? (
-        <p>loading</p>
+        <LoadingSpinner></LoadingSpinner>
       ) : (
         <ul>
           <InfiniteScroll
@@ -14,7 +15,7 @@ export function InfinityTweetList({ tweets, hasMore, fetchData }) {
             })}
             next={fetchData}
             hasMore={hasMore}
-            loader={"Loading..."}
+            loader={<LoadingSpinner></LoadingSpinner>}
           ></InfiniteScroll>
         </ul>
       )}
