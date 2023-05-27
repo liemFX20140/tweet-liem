@@ -1,4 +1,3 @@
-import { count } from "console";
 import { z } from "zod";
 
 import {
@@ -41,6 +40,7 @@ export const TweetRouter = createTRPCRouter({
         },
       });
       let nextCursor;
+
       if (tweets.length > limit) {
         const nextItem = tweets.pop();
         if (nextItem != null) {
@@ -54,7 +54,7 @@ export const TweetRouter = createTRPCRouter({
           createdAt: tweet.createdAt,
           likesCount: tweet._count,
           user: tweet.user,
-          likeByMe: tweet.likes.length > 0,
+          likeByMe: tweet.likes ? tweet.likes.length > 0 : false,
         };
       });
       return { mappedTweets, nextCursor };
@@ -71,7 +71,7 @@ export const TweetRouter = createTRPCRouter({
       async ({ input: { limit = 10, cursor, Following = false }, ctx }) => {
         const currentUserId = ctx.session?.user.id;
         const whereClause =
-          !Following || currentUserId == null
+          !Following || !currentUserId
             ? undefined
             : { user: { followers: { some: { id: currentUserId } } } };
         const tweets = await ctx.prisma.tweet.findMany({
@@ -107,7 +107,7 @@ export const TweetRouter = createTRPCRouter({
             createdAt: tweet.createdAt,
             likesCount: tweet._count,
             user: tweet.user,
-            likeByMe: tweet.likes.length > 0,
+            likeByMe: tweet.likes ? tweet.likes.length > 0 : false,
           };
         });
         return { mappedTweets, nextCursor };
@@ -116,7 +116,7 @@ export const TweetRouter = createTRPCRouter({
   create: protectedProcedure
     .input(z.object({ content: z.string() }))
     .mutation(async ({ input, ctx }) => {
-      console.log(input);
+      if (ctx.session.user.name === undefined) return;
       const tweet = await ctx.prisma.tweet.create({
         data: {
           content: input.content,

@@ -1,7 +1,7 @@
 import { api } from "../utils/api";
 import { InfinityTweetList } from "~/components/InfinityTweetList";
 export function FollowingTweet() {
-  const tweets = api.tweet.InfFeed.useInfiniteQuery(
+  const fetchedTweets = api.tweet.InfFeed.useInfiniteQuery(
     { Following: true },
     {
       getNextPageParam: (lastPage) => {
@@ -9,16 +9,17 @@ export function FollowingTweet() {
       },
     }
   );
-  console.log();
+  if (fetchedTweets.data == undefined) return;
   return (
     <div className="flex">
-      {tweets.data?.pages[0]?.mappedTweets.length === 0 ? (
+      {fetchedTweets.data?.pages[0]?.mappedTweets.length === 0 ? (
         <h1 className="mx-auto">No Teets</h1>
       ) : (
         <InfinityTweetList
-          tweets={tweets.data?.pages.flatMap((page) => page.mappedTweets)}
-          hasMore={tweets.hasNextPage}
-          fetchData={tweets.fetchNextPage}
+          isError={fetchedTweets.isError}
+          tweets={fetchedTweets.data.pages.flatMap((page) => page.mappedTweets)}
+          hasMore={fetchedTweets.hasNextPage || false}
+          fetchData={fetchedTweets?.fetchNextPage}
         />
       )}
     </div>

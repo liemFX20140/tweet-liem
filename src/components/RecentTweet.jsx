@@ -9,7 +9,7 @@ export function RecentTweets() {
   return (
     <InfinityTweetList
       tweets={tweets.data?.pages.flatMap((page) => page.mappedTweets)}
-      hasMore={tweets.hasNextPage}
+      hasMore={tweets.hasNextPage || false}
       fetchData={tweets.fetchNextPage}
     />
   );

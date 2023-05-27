@@ -3,7 +3,7 @@ import Link from "next/link";
 import { VscHome, VscAccount, VscSignOut, VscSignIn } from "react-icons/vsc";
 import { IconHover } from "./IconHover";
 
-const SideNav = (props) => {
+const SideNav = () => {
   const session = useSession();
   const data = session.data;
   const user = session.data?.user;

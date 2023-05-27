@@ -1,6 +1,12 @@
 import { useSession } from "next-auth/react";
 import { VscHeart, VscHeartFilled } from "react-icons/vsc";
-export function HeartButton({ likeByMe, toggleLike }) {
+
+type Props = {
+  likeByMe: boolean;
+  toggleLike: () => void;
+};
+
+export function HeartButton({ likeByMe, toggleLike }: Props) {
   const session = useSession();
   const HeartIcon = likeByMe ? VscHeartFilled : VscHeart;
   return (
