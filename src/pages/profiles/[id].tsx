@@ -26,7 +26,6 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
     { userId: id },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
-  if (tweets.data == undefined) return <h1>No tweets</h1>;
   // toggle follow
   const trpc = api.useContext();
   const toggleFollow = api.profiles.toggleFollow.useMutation({
@@ -50,6 +49,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
   if (tweets.isLoading) {
     return <LoadingSpinner></LoadingSpinner>;
   }
+  if (tweets.data == undefined && !tweets.isLoading) return <h1>No tweets</h1>;
   return (
     <>
       <Head>
