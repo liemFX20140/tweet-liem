@@ -31,6 +31,7 @@ const Home: NextPage = () => {
             onClick={() => {
               setTab("Following");
             }}
+            disabled={user == null}
           >
             Following
           </button>

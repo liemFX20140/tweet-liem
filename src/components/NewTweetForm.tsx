@@ -33,7 +33,7 @@ export function NewTweetForm() {
 
         const newCacheTweet = {
           ...newTweet,
-          likeCount: 0,
+          likesCount: { likes: 0 },
           likedByMe: false,
           user: {
             id: session.data.user.id,
@@ -47,7 +47,7 @@ export function NewTweetForm() {
           pages: [
             {
               ...oldData.pages[0],
-              tweets: [newCacheTweet, ...oldData.pages[0].mappedTweets],
+              mappedTweets: [newCacheTweet, ...oldData.pages[0].mappedTweets],
             },
             ...oldData.pages.slice(1),
           ],
