@@ -37,8 +37,8 @@ export function InfinityTweetList({
             hasMore={hasMore || false}
             loader={<LoadingSpinner></LoadingSpinner>}
           >
-            {tweets.map((tweet: { id: string }) => {
-              return <TweetCard key={tweet.id} tweet={tweet}></TweetCard>;
+            {tweets.map((tweet) => {
+              return <TweetCard key={tweet.id} tweetData={tweet}></TweetCard>;
             })}
           </InfiniteScroll>
         </ul>

@@ -9,7 +9,7 @@ export function FollowingTweet() {
       },
     }
   );
-  if (fetchedTweets.data == undefined) return;
+  if (fetchedTweets.data == undefined) return null;
   return (
     <div className="flex">
       {fetchedTweets.data?.pages[0]?.mappedTweets.length === 0 ? (

@@ -5,8 +5,19 @@ import { HeartButton } from "~/components/HeartButton";
 import { IconHover } from "~/components/IconHover";
 import { api } from "~/utils/api";
 
-export function TweetCard({ tweet }: any) {
-  const tweetId = tweet.id;
+type Tweet = {
+  id: string;
+  content: string;
+  createdAt: Date;
+  likesCount: { likes: number };
+  user: { image: string | null; id: string; name: string | null };
+  likeByMe: boolean;
+};
+type Props = {
+  tweetData: Tweet;
+};
+export function TweetCard({ tweetData }: Props) {
+  const tweetId = tweetData.id;
   const session = useSession();
   const user = session.data?.user;
   const trpcCTX = api.useContext();
@@ -49,39 +60,39 @@ export function TweetCard({ tweet }: any) {
   // like feature
 
   const handleToggleLike = () => {
-    toggleLike.mutate({ id: tweet.id });
+    toggleLike.mutate({ id: tweetData.id });
   };
   const datetimeFormater = new Intl.DateTimeFormat(undefined, {
     dateStyle: "short",
   });
   return (
     <li className="flex gap-4 border-b px-4 py-4">
-      <Link href={`/profiles/${user?.id}`}>
-        <ProfileImage src={tweet.user?.image} className={""}></ProfileImage>
+      <Link href={`/profiles/${tweetData.user.id}`}>
+        <ProfileImage src={tweetData.user?.image} className={""}></ProfileImage>
       </Link>
       <div className="flex flex-grow flex-col">
         <div className="flex gap-1">
           <Link
-            href={`/profiles/${tweet.user?.id}`}
+            href={`/profiles/${tweetData.user?.id}`}
             className="font-bold outline-none hover:underline focus-visible:underline"
           >
-            {tweet.user.name}
+            {tweetData.user.name}
           </Link>
           <span className="text-gray-500"></span>
           <span className="text-gray-500">
             {" "}
-            {datetimeFormater.format(tweet.createAt)}
+            {datetimeFormater.format(tweetData.createdAt)}
           </span>
         </div>
-        <p className="whitespace-pre-wrap">{tweet.content}</p>
+        <p className="whitespace-pre-wrap">{tweetData.content}</p>
         <div className="flex items-center">
           <IconHover red={true}>
             <HeartButton
-              likeByMe={tweet.likeByMe}
+              likeByMe={tweetData.likeByMe}
               toggleLike={handleToggleLike}
             ></HeartButton>
           </IconHover>
-          <span>{tweet.likesCount.likes}</span>
+          <span>{tweetData.likesCount.likes}</span>
         </div>
       </div>
     </li>

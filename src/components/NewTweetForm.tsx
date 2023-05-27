@@ -1,4 +1,3 @@
-import { Tweet } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useLayoutEffect, useState, useRef, useCallback } from "react";
 import { Button } from "~/components/Button";
@@ -6,7 +5,7 @@ import { ProfileImage } from "~/components/ProfileImage";
 import { api } from "~/utils/api";
 
 export function NewTweetForm() {
-  const sesssion = useSession();
+  const session = useSession();
 
   const [inputValue, setInputValue] = useState("");
   //chinh chieu cao o nhap post
@@ -26,26 +25,29 @@ export function NewTweetForm() {
   const createTweet = api.tweet.create.useMutation({
     onSuccess: (newTweet) => {
       setInputValue("");
-      if (sesssion.status !== "authenticated") return;
+
+      if (session.status !== "authenticated") return;
+
       trpc.tweet.InfFeed.setInfiniteData({}, (oldData) => {
         if (oldData == null || oldData.pages[0] == null) return;
 
-        const newCacheTweets = {
+        const newCacheTweet = {
           ...newTweet,
-          likesCount: { likes: 0 },
-          likeByMe: false,
+          likeCount: 0,
+          likedByMe: false,
           user: {
-            id: sesssion.data.user.id,
-            name: sesssion.data.user.name || null,
-            image: sesssion.data.user.image || null,
+            id: session.data.user.id,
+            name: session.data.user.name || null,
+            image: session.data.user.image || null,
           },
         };
+
         return {
           ...oldData,
           pages: [
             {
               ...oldData.pages[0],
-              mappedTweets: [newCacheTweets, ...oldData.pages[0].mappedTweets],
+              tweets: [newCacheTweet, ...oldData.pages[0].mappedTweets],
             },
             ...oldData.pages.slice(1),
           ],
@@ -61,13 +63,13 @@ export function NewTweetForm() {
   useLayoutEffect(() => {
     updateTextareaHeight(textAreaRef.current);
   }, [inputValue]);
-  if (sesssion.status !== "authenticated") return null;
+  if (session.status !== "authenticated") return null;
   return (
     <form className="flex flex-col gap-2 border-b px-4 py-2">
       <div className="flex gap-4">
-        {sesssion.data && (
+        {session.data && (
           <ProfileImage
-            src={sesssion.data.user.image}
+            src={session.data.user.image}
             className={""}
           ></ProfileImage>
         )}

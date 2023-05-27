@@ -26,6 +26,7 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
     { userId: id },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
+  if (tweets.data == undefined) return <h1>No tweets</h1>;
   // toggle follow
   const trpc = api.useContext();
   const toggleFollow = api.profiles.toggleFollow.useMutation({
@@ -87,7 +88,8 @@ const ProfilePage: NextPage<InferGetStaticPropsType<typeof getStaticProps>> = ({
       </header>
       <main>
         <InfinityTweetList
-          tweets={tweets.data?.pages.flatMap((page) => page.mappedTweets)}
+          isError={tweets.isError}
+          tweets={tweets.data.pages.flatMap((page) => page.mappedTweets)}
           hasMore={tweets.hasNextPage || false}
           fetchData={tweets.fetchNextPage}
         ></InfinityTweetList>

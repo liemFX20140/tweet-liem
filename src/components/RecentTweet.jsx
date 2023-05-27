@@ -5,10 +5,11 @@ export function RecentTweets() {
     {},
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
-
+  if (tweets.data == undefined) return <h1>No tweets</h1>;
   return (
     <InfinityTweetList
-      tweets={tweets.data?.pages.flatMap((page) => page.mappedTweets)}
+      isError={tweets.isError}
+      tweets={tweets.data.pages.flatMap((page) => page.mappedTweets)}
       hasMore={tweets.hasNextPage || false}
       fetchData={tweets.fetchNextPage}
     />
