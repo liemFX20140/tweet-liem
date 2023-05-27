@@ -1,11 +1,11 @@
 import { api } from "../utils/api";
 import { InfinityTweetList } from "~/components/InfinityTweetList";
-export function RecentTweets() {
+export function FollowingTweet() {
   const tweets = api.tweet.InfFeed.useInfiniteQuery(
-    {},
+    { Following: true },
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
-  console.log(tweets);
+
   if (tweets.data == undefined) return <h1>No tweets</h1>;
   return (
     <InfinityTweetList

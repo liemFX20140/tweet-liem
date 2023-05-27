@@ -30,10 +30,10 @@ export function TweetCard({ tweetData }: Props) {
         const countModifier = addedLike.addedLike ? 1 : -1;
         return {
           ...oldData,
-          pages: oldData.pages.map((page: any) => {
+          pages: oldData.pages.map((page) => {
             return {
               ...page,
-              mappedTweets: page.mappedTweets.map((tweet: any) => {
+              mappedTweets: page.mappedTweets.map((tweet: Tweet) => {
                 if (tweet.id === tweetId) {
                   return {
                     ...tweet,

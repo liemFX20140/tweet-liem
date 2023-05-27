@@ -37,7 +37,7 @@ const Home: NextPage = () => {
           </button>
         </div>
       </header>
-      {user ? <NewTweetForm></NewTweetForm> : null}
+      <NewTweetForm></NewTweetForm>
       {tab === "Recent" ? (
         <RecentTweets></RecentTweets>
       ) : (

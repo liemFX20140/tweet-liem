@@ -1,40 +1,57 @@
 import { useSession } from "next-auth/react";
-import { useLayoutEffect, useState, useRef, useCallback } from "react";
-import { Button } from "~/components/Button";
-import { ProfileImage } from "~/components/ProfileImage";
+import {
+  FormEvent,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { api } from "~/utils/api";
+import { Button } from "./Button";
+import { ProfileImage } from "./ProfileImage";
+
+function updateTextAreaSize(textArea?: HTMLTextAreaElement) {
+  if (textArea == null) return;
+  textArea.style.height = "0";
+  textArea.style.height = `${textArea.scrollHeight}px`;
+}
 
 export function NewTweetForm() {
   const session = useSession();
+  if (session.status !== "authenticated") return null;
 
+  return <Form />;
+}
+
+function Form() {
+  const session = useSession();
   const [inputValue, setInputValue] = useState("");
-  //chinh chieu cao o nhap post
-  function updateTextareaHeight(textArea: HTMLTextAreaElement | undefined) {
-    if (textArea == null) return;
-    textArea.style.height = "0";
-    textArea.style.height = `${textArea.scrollHeight}px`;
-  }
   const textAreaRef = useRef<HTMLTextAreaElement>();
   const inputRef = useCallback((textArea: HTMLTextAreaElement) => {
-    updateTextareaHeight(textArea);
+    updateTextAreaSize(textArea);
     textAreaRef.current = textArea;
   }, []);
-  //submit post
-  const trpc = api.useContext();
+  const trpcUtils = api.useContext();
+
+  useLayoutEffect(() => {
+    updateTextAreaSize(textAreaRef.current);
+  }, [inputValue]);
 
   const createTweet = api.tweet.create.useMutation({
     onSuccess: (newTweet) => {
       setInputValue("");
-
+      if (newTweet == null) return;
       if (session.status !== "authenticated") return;
 
-      trpc.tweet.InfFeed.setInfiniteData({}, (oldData) => {
+      trpcUtils.tweet.InfFeed.setInfiniteData({}, (oldData) => {
         if (oldData == null || oldData.pages[0] == null) return;
-
+        console.log("newTweet", newTweet);
         const newCacheTweet = {
-          ...newTweet,
+          id: newTweet.id,
+          content: newTweet.content,
+          createdAt: newTweet.createdAt,
           likesCount: { likes: 0 },
-          likedByMe: false,
+          likeByMe: false,
           user: {
             id: session.data.user.id,
             name: session.data.user.name || null,
@@ -55,39 +72,32 @@ export function NewTweetForm() {
       });
     },
   });
-  const onSubmit = (event: React.MouseEvent<HTMLElement>) => {
-    event?.preventDefault();
-    createTweet.mutate({ content: inputValue });
-    setInputValue("");
-  };
-  useLayoutEffect(() => {
-    updateTextareaHeight(textAreaRef.current);
-  }, [inputValue]);
+
   if (session.status !== "authenticated") return null;
+
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    createTweet.mutate({ content: inputValue });
+  }
+
   return (
-    <form className="flex flex-col gap-2 border-b px-4 py-2">
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-2 border-b px-4 py-2"
+    >
       <div className="flex gap-4">
-        {session.data && (
-          <ProfileImage
-            src={session.data.user.image}
-            className={""}
-          ></ProfileImage>
-        )}
+        <ProfileImage src={session.data.user.image} />
         <textarea
           ref={inputRef}
+          style={{ height: 0 }}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           className="flex-grow resize-none overflow-hidden p-4 text-lg outline-none"
-          placeholder="Say something intersting"
-        ></textarea>
+          placeholder="What's happening?"
+        />
       </div>
-      <Button
-        className="self-end px-12"
-        onClick={onSubmit}
-        small={false}
-        gray={false}
-      >
-        Post
+      <Button className="self-end" type="submit">
+        Tweet
       </Button>
     </form>
   );

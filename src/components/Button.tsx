@@ -1,10 +1,10 @@
 import type { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
 
 type buttonProps = {
-  small: boolean;
-  gray: boolean;
+  small?: boolean;
+  gray?: boolean;
   className: string;
-  onClick: (event: React.MouseEvent<HTMLElement>) => void;
+  onClick?: (event: React.MouseEvent<HTMLElement>) => void;
 } & DetailedHTMLProps<
   ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
