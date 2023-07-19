@@ -5,7 +5,6 @@ export function RecentTweets() {
     {},
     { getNextPageParam: (lastPage) => lastPage.nextCursor }
   );
-  console.log(tweets);
   if (tweets.data == undefined) return <h1>No tweets</h1>;
   return (
     <InfinityTweetList

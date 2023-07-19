@@ -37,6 +37,7 @@ export const TweetRouter = createTRPCRouter({
           user: {
             select: { name: true, id: true, image: true },
           },
+          media: true,
         },
       });
       let nextCursor;
@@ -55,6 +56,7 @@ export const TweetRouter = createTRPCRouter({
           likesCount: tweet._count,
           user: tweet.user,
           likeByMe: tweet.likes ? tweet.likes.length > 0 : false,
+          media: tweet.media,
         };
       });
       return { mappedTweets, nextCursor };
@@ -91,6 +93,7 @@ export const TweetRouter = createTRPCRouter({
             user: {
               select: { name: true, id: true, image: true },
             },
+            media: true,
           },
         });
         let nextCursor;
@@ -108,19 +111,21 @@ export const TweetRouter = createTRPCRouter({
             likesCount: tweet._count,
             user: tweet.user,
             likeByMe: tweet.likes ? tweet.likes.length > 0 : false,
+            media: tweet.media,
           };
         });
         return { mappedTweets, nextCursor };
       }
     ),
   create: protectedProcedure
-    .input(z.object({ content: z.string() }))
+    .input(z.object({ content: z.string(), media: z.string().optional() }))
     .mutation(async ({ input, ctx }) => {
       if (ctx.session.user.name === undefined) return;
       const tweet = await ctx.prisma.tweet.create({
         data: {
           content: input.content,
           userId: ctx.session.user.id,
+          media: input.media,
         },
       });
       return tweet;

@@ -14,7 +14,13 @@ export function ProfileImage({ src, className = "" }: Props) {
       {src == null ? (
         <VscAccount></VscAccount>
       ) : (
-        <Image src={src} alt="ProfileImage" fill quality={100}></Image>
+        <Image
+          src={src}
+          alt="ProfileImage"
+          fill
+          sizes="md"
+          quality={100}
+        ></Image>
       )}
     </div>
   );

@@ -12,6 +12,7 @@ type Tweet = {
   likesCount: { likes: number };
   user: { image: string | null; id: string; name: string | null };
   likeByMe: boolean;
+  media: string;
 };
 type Props = {
   tweetData: Tweet;
@@ -85,6 +86,7 @@ export function TweetCard({ tweetData }: Props) {
           </span>
         </div>
         <p className="whitespace-pre-wrap">{tweetData.content}</p>
+        <img src={tweetData.media}></img>
         <div className="flex items-center">
           <IconHover red={true}>
             <HeartButton

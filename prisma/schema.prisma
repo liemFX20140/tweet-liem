@@ -15,10 +15,11 @@ model Tweet {
     id        String   @id @default(uuid())
     userId    String
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    content   String
+    content   String   @db.LongText
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     likes     Like[]
+    media     String?  @db.Text
 
     @@unique([id, createdAt])
     @@index([userId])
